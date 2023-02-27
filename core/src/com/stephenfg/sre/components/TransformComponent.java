@@ -9,14 +9,14 @@ public class TransformComponent implements Component {
     public float rotation;
     public boolean rotateClockwise;
 
-    TransformComponent(Vector2 position, Vector2 scale){
+    public TransformComponent(Vector2 position, Vector2 scale){
         this.position = position;
         this.scale = scale;
         this.rotation = 0;
         this.rotateClockwise = true;
     }
 
-    TransformComponent(Vector2 position, Vector2 scale, float rotation, boolean rotateClockwise){
+    public TransformComponent(Vector2 position, Vector2 scale, float rotation, boolean rotateClockwise){
         this.position = position;
         this.scale = scale;
         this.rotation = rotation;

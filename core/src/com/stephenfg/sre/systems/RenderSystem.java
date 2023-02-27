@@ -54,8 +54,7 @@ public class RenderSystem extends EntitySystem {
 
             //public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
             //float scaleX, float scaleY, float rotation, boolean clockwise);
-
-            batch.draw(
+            /*batch.draw(
                     sprite.region,
                     transform.position.x, transform.position.y,
                     sprite.originX, sprite.originY,
@@ -63,9 +62,11 @@ public class RenderSystem extends EntitySystem {
                     transform.scale.x, transform.scale.y,
                     transform.rotation,
                     transform.rotateClockwise
-            );
+            );*/
 
-            batch.end();
+            batch.draw(sprite.region, transform.position.x, transform.position.y);
+
         }
+        batch.end();
     }
 }
