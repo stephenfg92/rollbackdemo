@@ -5,6 +5,7 @@
 	<inherits name='com.badlogic.gdx.ai' />
 	<inherits name='com.badlogic.gdx.controllers' />
 	<inherits name='com.badlogic.gdx.controllers.controllers-gwt' />
+	<inherits name='com.badlogic.ashley_gwt' />
 
 	<inherits name='SREGame' />
 	<entry-point class='com.stephenfg.sre.client.HtmlLauncher' />
