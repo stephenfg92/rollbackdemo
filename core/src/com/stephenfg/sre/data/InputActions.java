@@ -1,4 +1,4 @@
-package com.stephenfg.sre.statics;
+package com.stephenfg.sre.data;
 
 public class InputActions {
     public static final int UP = 0;

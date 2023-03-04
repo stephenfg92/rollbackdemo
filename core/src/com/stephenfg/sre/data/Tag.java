@@ -1,4 +1,4 @@
-package com.stephenfg.sre.enums;
+package com.stephenfg.sre.data;
 
 enum Tag {
     PLAYER,

@@ -9,14 +9,14 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.stephenfg.sre.components.InputComponent;
-import com.stephenfg.sre.statics.InputActions;
+import com.stephenfg.sre.data.InputActions;
 
 public class InputSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ComponentMapper<InputComponent> im = ComponentMapper.getFor(InputComponent.class);
 
-    public InputSystem(){
-
+    public InputSystem(int priority){
+        this.priority = priority;
     }
 
     @Override
