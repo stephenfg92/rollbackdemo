@@ -25,26 +25,6 @@ public class CharacterstateSystem extends EntitySystem {
 
     public CharacterstateSystem(EventManager evtManager){
         this.evtManager = evtManager;
-
-        Signal<StatechangeEvent> signal = new Signal<StatechangeEvent>();
-        Listener<StatechangeEvent> listener = new Listener<StatechangeEvent>() {
-
-            @Override
-            public void receive(Signal<StatechangeEvent> signal, StatechangeEvent object) {
-
-                SpritesheetComponent sprite = sm.get(object.e);
-                Range range = HeroData.heroAnims.get(object.newState);
-
-                sprite.startTime = accumulatedTime;
-                sprite.numFrames = range.size;
-                sprite.startingRegion = range.start;
-                sprite.endingRegion = range.end;
-                sprite.currentFrame = sprite.startingRegion;
-            }
-        };
-
-        signal.add(listener);
-        evtManager.addSignalListenerPair(signal, listener);
     }
 
     @Override
@@ -68,7 +48,7 @@ public class CharacterstateSystem extends EntitySystem {
             switch (state.state){
                 case NONE:
                     state.state = CharacterState.IDLE;
-                    evtManager.signalToListener.;
+                    evtManager.DispatchStateChangeEvent(e, new StatechangeEvent(e, CharacterState.NONE, CharacterState.IDLE));
             }
         }
     }

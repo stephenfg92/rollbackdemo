@@ -1,47 +1,44 @@
 package com.stephenfg.sre.events;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.signals.Listener;
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.plaf.nimbus.State;
+
 public class EventManager {
-    public Map<Signal<?>, Listener<?>> signalToListener;
-    private Map<Listener<?>, Signal<?>> listenerToSignal;
+    Map<Entity, Array<StatechangeEvent>> stateChangeQsPerReceiver;
+    public Array<StatechangeEvent> stateChangeQ;
+
 
     public EventManager(){
-        signalToListener = new HashMap<Signal<?>, Listener<?>>();
+        stateChangeQsPerReceiver = new HashMap<>();
+    };
+
+    public void DispatchStateChangeEvent(Entity receiver, StatechangeEvent evt){
+        if (!stateChangeQsPerReceiver.containsKey(receiver)){
+            stateChangeQsPerReceiver.put(receiver, new Array<StatechangeEvent>(true, 32));
+        }
+
+        stateChangeQsPerReceiver.get(receiver).add(evt);
     }
 
-    public void addSignalListenerPair(Signal<?> s, Listener<?> l){
-        if (!signalToListener.containsKey(s)){
-            signalToListener.put(s, l);
-        }
-
-        if (!listenerToSignal.containsKey(l)){
-            listenerToSignal.put(l, s);
+    public void clearQs(){
+        for (Entity e : stateChangeQsPerReceiver.keySet()){
+            stateChangeQsPerReceiver.get(e).clear();
         }
     }
 
-    public Listener<?> getListenerFor(Signal<?> s){
-        try {
-            return signalToListener.get(s);
-        } catch (NullPointerException exception){
-            exception.printStackTrace();
-            Gdx.app.log("ERROR", "Signal not found.");
+    public Array<StatechangeEvent> getEventsFor(Entity receiver){
+        if (stateChangeQsPerReceiver.containsKey(receiver)){
+            return stateChangeQsPerReceiver.get(receiver);
         }
-        return null;
-    }
-
-    public Signal<?> getSignalFor(Listener<?> l){
-        try{
-
-        }catch (NullPointerException exception){
-            exception.printStackTrace();
-            Gdx.app.log("ERROR", "Listener not found.");
-        }
+        return new Array<StatechangeEvent>();
     }
 
 

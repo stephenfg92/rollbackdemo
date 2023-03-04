@@ -13,6 +13,7 @@ public class SpritesheetComponent implements Component {
     public int endingRegion;
     public int currentFrame;
     public float startTime;
+    public float lastUpdate;
 
 
     public SpritesheetComponent(TextureRegion[] regions, int frameRate) {
@@ -21,6 +22,7 @@ public class SpritesheetComponent implements Component {
         this.currentFrame = 0;
         this.frameRate = frameRate;
         this.startTime = 0;
+        this.lastUpdate = this.startTime;
     }
 
 

@@ -11,12 +11,9 @@ public class MakeTextureRegionArray {
         TextureRegion[] regions = new TextureRegion[frameHeight * frameWidth];
 
         for (int i = 0, h = 0; h < texH; h += frameHeight) {
-            for (int w = 0; w < texW; w += frameWidth) {
+            for (int w = 0; w < texW; w += frameWidth, ++i) {
                 regions[i] = new TextureRegion(texture, w, h, frameWidth, frameHeight);
-                w += frameWidth;
-                i++;
             }
-            h += frameHeight;
         }
 
         texHandler.addTexture(texture);

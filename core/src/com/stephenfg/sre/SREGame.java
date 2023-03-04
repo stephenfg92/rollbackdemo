@@ -29,6 +29,7 @@ import jdk.jfr.Event;
 public class SREGame extends ApplicationAdapter {
 	PooledEngine engine;
 	TextureDisposer texDisposer;
+	EventManager evtManager;
 
 	@Override
 	public void create () {
@@ -36,7 +37,7 @@ public class SREGame extends ApplicationAdapter {
 		camera.setToOrtho(false, 640, 480);
 		BitmapFont font = new BitmapFont();
 		texDisposer = new TextureDisposer();
-		EventManager evtManager = new EventManager();
+		evtManager = new EventManager();
 
 		engine = new PooledEngine();
 		engine.addSystem(new InputSystem(0));
@@ -61,6 +62,7 @@ public class SREGame extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		engine.update(Gdx.graphics.getDeltaTime());
+		evtManager.clearQs();
 	}
 	
 	@Override

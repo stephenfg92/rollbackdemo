@@ -6,12 +6,11 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.signals.Listener;
-import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.stephenfg.sre.components.CharacterstateComponent;
 import com.stephenfg.sre.components.SpritesheetComponent;
-import com.stephenfg.sre.data.CharacterState;
 import com.stephenfg.sre.data.hero.HeroData;
 import com.stephenfg.sre.events.EventManager;
 import com.stephenfg.sre.events.StatechangeEvent;
@@ -57,13 +56,36 @@ public class AnimationSystem extends EntitySystem {
             state = csm.get(e);
             sprite = sm.get(e);
 
-            sprite.currentFrame = getCurrentFrame(accumulatedTime, sprite.startTime, sprite.frameRate, sprite.numFrames);
+            Array<StatechangeEvent> arrevt = lookForStateChangeEvents(e);
+            applyEventToSprite(arrevt, sprite);
+
+            sprite.currentFrame = getCurrentFrame(sprite, accumulatedTime, sprite.startTime, sprite.frameRate, sprite.numFrames);
 
         }
     }
 
-    private strictfp int getCurrentFrame(float accumulatedTime, float startTime, int frameRate, int numFrames){
-        return Math.round(((accumulatedTime - startTime ) - frameRate / 1000.0f) % numFrames);
+    private strictfp int getCurrentFrame(SpritesheetComponent sprite, float accumulatedTime, float startTime, int frameRate, int numFrames){
+        //...
+    }
+
+
+    private Array<StatechangeEvent> lookForStateChangeEvents(Entity e){
+        return evtManager.getEventsFor(e);
+    }
+
+    private void applyEventToSprite(Array<StatechangeEvent> stateChangeEventsQ, SpritesheetComponent sprite){
+        if (stateChangeEventsQ.isEmpty()){
+            return;
+        }
+
+        for (StatechangeEvent evt : stateChangeEventsQ){
+            Range range = HeroData.heroAnims.get(evt.newState);
+            sprite.startingRegion = range.start;
+            sprite.endingRegion = range.end;
+            sprite.startTime = accumulatedTime;
+            sprite.currentFrame = sprite.startingRegion;
+            sprite.numFrames = range.size;
+        }
     }
 
 }

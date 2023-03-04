@@ -14,7 +14,7 @@ public class Range {
     private int count(){
         int size = 0;
         for (int i = this.start; i < this.end; ++i){
-            size += i;
+            size += 1;
         }
         return size;
     }
