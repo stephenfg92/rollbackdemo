@@ -17,14 +17,9 @@ import com.stephenfg.sre.events.StatechangeEvent;
 import com.stephenfg.sre.util.Range;
 import com.stephenfg.sre.util.StrictfpMath;
 
-import javax.swing.plaf.nimbus.State;
-
-import jdk.jfr.Event;
-
 
 public class AnimationSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
-    private ComponentMapper<CharacterstateComponent> csm = ComponentMapper.getFor(CharacterstateComponent.class);
     private ComponentMapper<SpritesheetComponent> sm = ComponentMapper.getFor(SpritesheetComponent.class);
     EventManager evtManager;
     Listener<StatechangeEvent> stateChangeListener;
@@ -47,25 +42,27 @@ public class AnimationSystem extends EntitySystem {
     @Override
     public void update(float deltaTime){
         accumulatedTime = StrictfpMath.strictSum(accumulatedTime, Gdx.graphics.getDeltaTime());
-
-        CharacterstateComponent state;
         SpritesheetComponent sprite;
 
         for (int i = 0; i < entities.size(); ++i){
             Entity e = entities.get(i);
-            state = csm.get(e);
             sprite = sm.get(e);
 
             Array<StatechangeEvent> arrevt = lookForStateChangeEvents(e);
             applyEventToSprite(arrevt, sprite);
+            updateSprite(sprite);
+            }
 
-            sprite.currentFrame = getCurrentFrame(sprite, accumulatedTime, sprite.startTime, sprite.frameRate, sprite.numFrames);
-
-        }
     }
 
-    private strictfp int getCurrentFrame(SpritesheetComponent sprite, float accumulatedTime, float startTime, int frameRate, int numFrames){
-        //...
+    private strictfp void updateSprite(SpritesheetComponent sprite){
+        float dt = (accumulatedTime - sprite.lastUpdate);
+        int framesToUpdate = (int)(dt / (1.0f/sprite.frameRate));
+        if (framesToUpdate > 0){
+            sprite.currentFrame += framesToUpdate;
+            sprite.currentFrame %= sprite.numFrames;
+            sprite.lastUpdate = accumulatedTime;
+        }
     }
 
 
@@ -82,7 +79,7 @@ public class AnimationSystem extends EntitySystem {
             Range range = HeroData.heroAnims.get(evt.newState);
             sprite.startingRegion = range.start;
             sprite.endingRegion = range.end;
-            sprite.startTime = accumulatedTime;
+            sprite.lastUpdate = accumulatedTime;
             sprite.currentFrame = sprite.startingRegion;
             sprite.numFrames = range.size;
         }
