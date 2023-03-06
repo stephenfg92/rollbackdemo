@@ -10,18 +10,24 @@ import com.badlogic.gdx.Gdx;
 import com.stephenfg.sre.components.CharacterstateComponent;
 import com.stephenfg.sre.components.SpritesheetComponent;
 import com.stephenfg.sre.data.hero.HeroData;
+import com.stephenfg.sre.events.novo.Callback;
+import com.stephenfg.sre.events.novo.Event;
+import com.stephenfg.sre.events.novo.EventBus;
+import com.stephenfg.sre.events.novo.EventSubscriber;
 import com.stephenfg.sre.events.statechange.StatechangeEvent;
 import com.stephenfg.sre.events.statechange.StatechangeSubscriber;
 import com.stephenfg.sre.util.Range;
 import com.stephenfg.sre.util.StrictfpMath;
 
 
-public class AnimationSystem extends EntitySystem implements StatechangeSubscriber {
+public class AnimationSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ComponentMapper<SpritesheetComponent> sm = ComponentMapper.getFor(SpritesheetComponent.class);
     private float accumulatedTime = 0.0f;
+    private EventBus eventBus;
 
-    public AnimationSystem(){
+    public AnimationSystem(EventBus eventBus){
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -57,7 +63,6 @@ public class AnimationSystem extends EntitySystem implements StatechangeSubscrib
         }
     }
 
-    @Override
     public void onStateChange(StatechangeEvent evt) {
         SpritesheetComponent sprite = sm.get(evt.receiver);
         Range range = HeroData.heroAnims.get(evt.newState);
@@ -68,4 +73,9 @@ public class AnimationSystem extends EntitySystem implements StatechangeSubscrib
         sprite.currentFrame = sprite.startingRegion;
         sprite.numFrames = range.size;
     }
+
+    /*@Override
+    public void subscribeToEvent(Class<? extends Event> event, String methodName) {
+        eventBus.subscribeToEvent(event.getClass(), new Callback(this, methodName));
+    }*/
 }
