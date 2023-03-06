@@ -15,7 +15,7 @@ import com.stephenfg.sre.components.SpritesheetComponent;
 import com.stephenfg.sre.components.TransformComponent;
 import com.stephenfg.sre.data.CharacterState;
 import com.stephenfg.sre.data.hero.HeroData;
-import com.stephenfg.sre.events.EventManager;
+import com.stephenfg.sre.events.statechange.StatechangePublisher;
 import com.stephenfg.sre.systems.AnimationSystem;
 import com.stephenfg.sre.systems.CharacterstateSystem;
 import com.stephenfg.sre.systems.InputSystem;
@@ -24,12 +24,9 @@ import com.stephenfg.sre.systems.RenderSystem;
 import com.stephenfg.sre.util.MakeTextureRegionArray;
 import com.stephenfg.sre.util.TextureDisposer;
 
-import jdk.jfr.Event;
-
 public class SREGame extends ApplicationAdapter {
 	PooledEngine engine;
 	TextureDisposer texDisposer;
-	EventManager evtManager;
 
 	@Override
 	public void create () {
@@ -37,13 +34,15 @@ public class SREGame extends ApplicationAdapter {
 		camera.setToOrtho(false, 640, 480);
 		BitmapFont font = new BitmapFont();
 		texDisposer = new TextureDisposer();
-		evtManager = new EventManager();
+		StatechangePublisher statechangePublisher = new StatechangePublisher();
 
 		engine = new PooledEngine();
 		engine.addSystem(new InputSystem(0));
-		engine.addSystem(new CharacterstateSystem(evtManager));
+		engine.addSystem(new CharacterstateSystem(statechangePublisher));
 		engine.addSystem(new MovementSystem());
-		engine.addSystem(new AnimationSystem(evtManager));
+		AnimationSystem animationSystem = new AnimationSystem();
+		statechangePublisher.addSubscriber(animationSystem);
+		engine.addSystem(animationSystem);
 		engine.addSystem(new RenderSystem(camera, font));
 
 		Entity hero = engine.createEntity();
@@ -62,7 +61,6 @@ public class SREGame extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		engine.update(Gdx.graphics.getDeltaTime());
-		evtManager.clearQs();
 	}
 	
 	@Override

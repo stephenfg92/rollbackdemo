@@ -5,26 +5,20 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.signals.Listener;
-import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.stephenfg.sre.components.CharacterstateComponent;
-import com.stephenfg.sre.components.InputComponent;
-import com.stephenfg.sre.components.SpritesheetComponent;
 import com.stephenfg.sre.data.CharacterState;
-import com.stephenfg.sre.data.hero.HeroData;
-import com.stephenfg.sre.events.EventManager;
-import com.stephenfg.sre.events.StatechangeEvent;
-import com.stephenfg.sre.util.Range;
+import com.stephenfg.sre.events.statechange.StatechangeEvent;
+import com.stephenfg.sre.events.statechange.StatechangePublisher;
 
 
 public class CharacterstateSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ComponentMapper<CharacterstateComponent> csm = ComponentMapper.getFor(CharacterstateComponent.class);
-    private EventManager evtManager;
+    private StatechangePublisher statechangePublisher;
 
-    public CharacterstateSystem(EventManager evtManager){
-        this.evtManager = evtManager;
+    public CharacterstateSystem(StatechangePublisher statechangePublisher){
+        this.statechangePublisher = statechangePublisher;
     }
 
     @Override
@@ -48,7 +42,7 @@ public class CharacterstateSystem extends EntitySystem {
             switch (state.state){
                 case NONE:
                     state.state = CharacterState.IDLE;
-                    evtManager.DispatchStateChangeEvent(e, new StatechangeEvent(e, CharacterState.NONE, CharacterState.IDLE));
+                    statechangePublisher.notifySubscribers(new StatechangeEvent(e, CharacterState.NONE, CharacterState.IDLE));
             }
         }
     }
