@@ -8,18 +8,14 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.stephenfg.sre.components.CharacterstateComponent;
 import com.stephenfg.sre.data.CharacterState;
-import com.stephenfg.sre.events.novo.Event;
-import com.stephenfg.sre.events.novo.EventBus;
-import com.stephenfg.sre.events.statechange.StatechangeEvent;
-import com.stephenfg.sre.events.statechange.StatechangePublisher;
-
+import com.stephenfg.sre.events.EventBus;
+import com.stephenfg.sre.events.StatechangeEvent;
 import java.lang.reflect.InvocationTargetException;
 
 
 public class CharacterstateSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ComponentMapper<CharacterstateComponent> csm = ComponentMapper.getFor(CharacterstateComponent.class);
-    private StatechangePublisher statechangePublisher;
     private EventBus eventBus;
 
     public CharacterstateSystem(EventBus eventBus){
@@ -44,22 +40,34 @@ public class CharacterstateSystem extends EntitySystem {
         for (int i = 0; i < entities.size(); ++i){
             Entity e = entities.get(i);
             state = csm.get(e);
+            StatechangeEvent event;
 
             switch (state.state){
                 case NONE:
                     state.state = CharacterState.IDLE;
-                    //statechangePublisher.notifySubscribers(new StatechangeEvent(e, CharacterState.NONE, CharacterState.IDLE));
-                    StatechangeEvent evt = new StatechangeEvent(e, CharacterState.NONE, CharacterState.IDLE);
-                    try {
-                        eventBus.emitEvent(evt);
-                    } catch (NoSuchMethodException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (InvocationTargetException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (IllegalAccessException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    event = new StatechangeEvent(e, CharacterState.NONE, CharacterState.IDLE);
+                    break;
+                default:
+                    event = null;
+            }
+
+            if (event != null){
+                try {
+                    emitEvent(event);
+                } catch (InvocationTargetException ex) {
+                    throw new RuntimeException(ex);
+                } catch (NoSuchMethodException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IllegalAccessException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
     }
+    
+    private void emitEvent(StatechangeEvent event) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        eventBus.emitEvent(event);
+    }
+    
+    
 }

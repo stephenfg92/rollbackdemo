@@ -9,18 +9,18 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.stephenfg.sre.components.CharacterstateComponent;
 import com.stephenfg.sre.components.SpritesheetComponent;
+import com.stephenfg.sre.events.CallbackName;
 import com.stephenfg.sre.data.hero.HeroData;
-import com.stephenfg.sre.events.novo.Callback;
-import com.stephenfg.sre.events.novo.Event;
-import com.stephenfg.sre.events.novo.EventBus;
-import com.stephenfg.sre.events.novo.EventSubscriber;
-import com.stephenfg.sre.events.statechange.StatechangeEvent;
-import com.stephenfg.sre.events.statechange.StatechangeSubscriber;
+import com.stephenfg.sre.events.Callback;
+import com.stephenfg.sre.events.Event;
+import com.stephenfg.sre.events.EventBus;
+import com.stephenfg.sre.events.StatechangeEvent;
+import com.stephenfg.sre.events.Subscriber;
 import com.stephenfg.sre.util.Range;
 import com.stephenfg.sre.util.StrictfpMath;
 
 
-public class AnimationSystem extends EntitySystem {
+public class AnimationSystem extends EntitySystem implements Subscriber {
     private ImmutableArray<Entity> entities;
     private ComponentMapper<SpritesheetComponent> sm = ComponentMapper.getFor(SpritesheetComponent.class);
     private float accumulatedTime = 0.0f;
@@ -74,8 +74,10 @@ public class AnimationSystem extends EntitySystem {
         sprite.numFrames = range.size;
     }
 
-    /*@Override
-    public void subscribeToEvent(Class<? extends Event> event, String methodName) {
-        eventBus.subscribeToEvent(event.getClass(), new Callback(this, methodName));
-    }*/
+    @Override
+    public Subscriber subscribeToEvent(Class<? extends Event> event) {
+        String callbackName = CallbackName.getName(event);
+        eventBus.subscribeToEvent(event, new Callback(this, callbackName));
+        return this;
+    }
 }

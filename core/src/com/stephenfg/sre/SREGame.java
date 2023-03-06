@@ -1,6 +1,7 @@
 package com.stephenfg.sre;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -15,10 +16,8 @@ import com.stephenfg.sre.components.SpritesheetComponent;
 import com.stephenfg.sre.components.TransformComponent;
 import com.stephenfg.sre.data.CharacterState;
 import com.stephenfg.sre.data.hero.HeroData;
-import com.stephenfg.sre.events.novo.Callback;
-import com.stephenfg.sre.events.novo.EventBus;
-import com.stephenfg.sre.events.statechange.StatechangeEvent;
-import com.stephenfg.sre.events.statechange.StatechangePublisher;
+import com.stephenfg.sre.events.EventBus;
+import com.stephenfg.sre.events.StatechangeEvent;
 import com.stephenfg.sre.systems.AnimationSystem;
 import com.stephenfg.sre.systems.CharacterstateSystem;
 import com.stephenfg.sre.systems.InputSystem;
@@ -37,19 +36,13 @@ public class SREGame extends ApplicationAdapter {
 		camera.setToOrtho(false, 640, 480);
 		BitmapFont font = new BitmapFont();
 		texDisposer = new TextureDisposer();
-		StatechangePublisher statechangePublisher = new StatechangePublisher();
-
 		EventBus eventBus = new EventBus();
-
-		AnimationSystem animationSystem = new AnimationSystem(eventBus);
-		//animationSystem.subscribeToEvent(StatechangeEvent.class, "onStateChange");
-		eventBus.subscribeToEvent(StatechangeEvent.class, new Callback(animationSystem, "onStateChange") );
 
 		engine = new PooledEngine();
 		engine.addSystem(new InputSystem(0));
 		engine.addSystem(new CharacterstateSystem(eventBus));
 		engine.addSystem(new MovementSystem());
-		engine.addSystem(animationSystem);
+		engine.addSystem((EntitySystem) new AnimationSystem(eventBus).subscribeToEvent(StatechangeEvent.class));
 		engine.addSystem(new RenderSystem(camera, font));
 
 		Entity hero = engine.createEntity();

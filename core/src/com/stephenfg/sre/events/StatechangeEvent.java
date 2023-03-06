@@ -1,8 +1,7 @@
-package com.stephenfg.sre.events.statechange;
+package com.stephenfg.sre.events;
 
 import com.badlogic.ashley.core.Entity;
 import com.stephenfg.sre.data.CharacterState;
-import com.stephenfg.sre.events.novo.Event;
 
 public class StatechangeEvent implements Event {
     public Entity receiver;
