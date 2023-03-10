@@ -12,10 +12,6 @@ public class Range {
     }
 
     private int count(){
-        int size = 0;
-        for (int i = this.start; i < this.end; ++i){
-            size += 1;
-        }
-        return size;
+        return (end - start) +1;
     }
 }

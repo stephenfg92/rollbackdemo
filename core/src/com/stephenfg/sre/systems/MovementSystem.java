@@ -44,6 +44,8 @@ public class MovementSystem  extends EntitySystem {
             velocity.x += HeroData.hSpeed;
         if (isBitTrue(b, InputActions.LEFT))
             velocity.x -= HeroData.hSpeed;
+        //if (!isBitTrue(b, InputActions.LEFT) && !isBitTrue(b, InputActions.RIGHT))
+        //    velocity.x = 0;
 
         return velocity;
     }
@@ -65,6 +67,7 @@ public class MovementSystem  extends EntitySystem {
             rigidbody = rm.get(e);
             transform = tm.get(e);
 
+            rigidbody.previousVelocity = rigidbody.velocity;
             rigidbody.velocity = getVelocity(input.bits);
             applyVelocity(transform.position, rigidbody.velocity, deltaTime);
         }

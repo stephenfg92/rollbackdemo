@@ -41,6 +41,8 @@ public class InputSystem extends EntitySystem {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             b |= (1 << InputActions.RIGHT);
 
+        //b |= (1 << InputActions.RIGHT);
+
         return b;
     }
 

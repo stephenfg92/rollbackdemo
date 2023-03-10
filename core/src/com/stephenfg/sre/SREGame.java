@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.stephenfg.sre.components.CharacterstateComponent;
+import com.stephenfg.sre.components.FacingComponent;
 import com.stephenfg.sre.components.InputComponent;
 import com.stephenfg.sre.components.RigidbodyComponent;
 import com.stephenfg.sre.components.SpritesheetComponent;
@@ -48,7 +49,8 @@ public class SREGame extends ApplicationAdapter {
 		Entity hero = engine.createEntity();
 		hero.add(new InputComponent());
 		hero.add(new CharacterstateComponent(CharacterState.NONE));
-		hero.add(new TransformComponent(new Vector2(50, 50)));
+		hero.add(new FacingComponent());
+		hero.add(new TransformComponent(new Vector2(50, 50), new Vector2(3, 3)));
 		hero.add(new RigidbodyComponent());
 		hero.add(new SpritesheetComponent(MakeTextureRegionArray.make(texDisposer, HeroData.spritePath, HeroData.spriteFrameW, HeroData.spriteFrameH), HeroData.animFps));
 

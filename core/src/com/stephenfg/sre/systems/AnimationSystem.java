@@ -58,7 +58,10 @@ public class AnimationSystem extends EntitySystem implements Subscriber {
         int framesToUpdate = (int)(dt / (1.0f/sprite.frameRate));
         if (framesToUpdate > 0){
             sprite.currentFrame += framesToUpdate;
-            sprite.currentFrame %= sprite.numFrames;
+            sprite.currentFrame %= sprite.numFrames + sprite.startingRegion;
+            if(sprite.currentFrame == 0)
+                sprite.currentFrame = sprite.startingRegion;
+
             sprite.lastUpdate = accumulatedTime;
         }
     }
@@ -67,11 +70,10 @@ public class AnimationSystem extends EntitySystem implements Subscriber {
         SpritesheetComponent sprite = sm.get(evt.receiver);
         Range range = HeroData.heroAnims.get(evt.newState);
 
+        sprite.numFrames = range.size;
         sprite.startingRegion = range.start;
         sprite.endingRegion = range.end;
-        sprite.lastUpdate = accumulatedTime;
         sprite.currentFrame = sprite.startingRegion;
-        sprite.numFrames = range.size;
     }
 
     @Override
