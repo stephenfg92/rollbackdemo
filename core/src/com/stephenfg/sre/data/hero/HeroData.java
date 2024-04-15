@@ -1,21 +1,21 @@
 package com.stephenfg.sre.data.hero;
 
-import com.stephenfg.sre.data.CharacterState;
-import com.stephenfg.sre.util.Range;
+import com.stephenfg.sre.data.EstadoDoPersonagem;
+import com.stephenfg.sre.utilidades.Intervalo;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class HeroData {
-    public static float hSpeed = 200;
-    public static String spritePath = "warrior/sheet/warrior.png";
-    public static int spriteFrameH = 69;
-    public static int spriteFrameW = 44;
-    public static int spriteSheetCols = 6;
-    public static int spriteSheetRows = 17;
-    public static Map<CharacterState, Range> heroAnims = new HashMap<CharacterState, Range>(){{
-        put(CharacterState.IDLE, new Range(0, 5));
-        put(CharacterState.RUN, new Range(6, 13));
+    public static float velocidadeHorizontal = 200;
+    public static String caminhoSprite = "warrior/sheet/warrior.png";
+    public static int alturaQuadro = 69;
+    public static int larguraQuadro = 44;
+    public static int numeroColunas = 6;
+    public static int numeroLinhas = 17;
+    public static Map<EstadoDoPersonagem, Intervalo> heroAnims = new HashMap<EstadoDoPersonagem, Intervalo>(){{
+        put(EstadoDoPersonagem.PARADO, new Intervalo(0, 5));
+        put(EstadoDoPersonagem.CORRENDO, new Intervalo(6, 13));
     }};
-    public static int animFps = 1;
+    public static int quadrosPorSegundo = 10;
 }
