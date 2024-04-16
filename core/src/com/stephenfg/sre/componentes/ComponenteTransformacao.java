@@ -7,7 +7,7 @@ public class ComponenteTransformacao implements Component {
     public Vector2 posicao;
     public Vector2 escala;
 
-    public double rotacao = 0.f;
+    public float rotacao = 0.f;
 
     public ComponenteTransformacao(Vector2 posicao){
         this.posicao = posicao;

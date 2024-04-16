@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.stephenfg.sre.componentes.ComponenteAnimacao;
 import com.stephenfg.sre.componentes.ComponenteColisorCaixa;
+import com.stephenfg.sre.componentes.ComponenteDebug;
 import com.stephenfg.sre.componentes.ComponenteEstado;
 import com.stephenfg.sre.componentes.ComponenteOrientacao;
 import com.stephenfg.sre.componentes.ComponenteComando;
@@ -25,6 +26,7 @@ import com.stephenfg.sre.eventos.BarramentoDeEventos;
 import com.stephenfg.sre.eventos.EventoMudancaDeEstado;
 import com.stephenfg.sre.sistemas.SistemaDeAnimacao;
 import com.stephenfg.sre.sistemas.SistemaDeOrientacao;
+import com.stephenfg.sre.sistemas.SistemaDesenhoDebug;
 import com.stephenfg.sre.sistemas.SistemaEstadoDePersonagem;
 import com.stephenfg.sre.sistemas.SistemaComando;
 import com.stephenfg.sre.sistemas.SistemaMovimento;
@@ -58,6 +60,7 @@ public class SREGame extends ApplicationAdapter {
 		engine.addSystem((EntitySystem) new SistemaDeAnimacao(barramento).assinarEvento(EventoMudancaDeEstado.class));
 		engine.addSystem(new SistemaDeOrientacao());
 		engine.addSystem(new SistemaDesenho(camera, font));
+		engine.addSystem(new SistemaDesenhoDebug(camera, font));
 
 		return engine;
 	}
@@ -71,11 +74,12 @@ public class SREGame extends ApplicationAdapter {
 		hero.add(new ComponenteCorpoRigido());
 		hero.add(new ComponenteSpritesheet(CriarArrayTextureRegion.criar(despachanteTexturas, HeroData.caminhoSprite, HeroData.larguraQuadro, HeroData.alturaQuadro, HeroData.numeroLinhas, HeroData.numeroColunas)));
 		hero.add(new ComponenteAnimacao(HeroData.quadrosPorSegundo));
+		hero.add(new ComponenteDebug());
 		engine.addEntity(hero);
 
 		Entity arve =  engine.createEntity();
 		arve.add(new ComponenteTransformacao(new Vector2(200,50), new Vector2(3, 3)));
-		arve.add(new ComponenteSpritesheet(CriarArrayTextureRegion.criar(despachanteTexturas, "tree/tree.png", 16, 32, 1, 1)));
+		arve.add(new ComponenteSpritesheet(CriarArrayTextureRegion.criar(despachanteTexturas, "tree/tree.png", 16, 32)));
 		arve.add(new ComponenteColisorCaixa(16,32));
 		engine.addEntity(arve);
 	}
