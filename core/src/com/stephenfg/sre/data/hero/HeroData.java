@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HeroData {
+    public static String id = "hero";
     public static float velocidadeHorizontal = 200;
     public static String caminhoSprite = "warrior/sheet/warrior.png";
     public static int alturaQuadro = 69;

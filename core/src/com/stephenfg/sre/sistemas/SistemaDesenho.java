@@ -17,10 +17,12 @@ import com.stephenfg.sre.componentes.ComponenteOrientacao;
 import com.stephenfg.sre.componentes.ComponenteCorpoRigido;
 import com.stephenfg.sre.componentes.ComponenteSpritesheet;
 import com.stephenfg.sre.componentes.ComponenteTransformacao;
+import com.stephenfg.sre.utilidades.GerenciadorDeRecursos;
 
 //Ref https://github.com/libgdx/ashley/blob/caac1ff50cb30d67be8469a7fae7579fd549fd07/tests/src/com/badlogic/ashley/tests/systems/RenderSystem.java#L30
 public class SistemaDesenho extends EntitySystem {
     private ImmutableArray<Entity> entidades;
+    GerenciadorDeRecursos recursos;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
@@ -33,10 +35,11 @@ public class SistemaDesenho extends EntitySystem {
     private ComponentMapper<ComponenteEstado> mapeadorEstado = ComponentMapper.getFor(ComponenteEstado.class);
     private ComponentMapper<ComponenteCorpoRigido> mapeadorCorpoRigido = ComponentMapper.getFor(ComponenteCorpoRigido.class);
 
-    public SistemaDesenho(OrthographicCamera camera, BitmapFont font){
+    public SistemaDesenho(OrthographicCamera camera, BitmapFont font, GerenciadorDeRecursos recursos){
         batch = new SpriteBatch();
         this.camera = camera;
         this.font = font;
+        this.recursos = recursos;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class SistemaDesenho extends EntitySystem {
             transformacao = mapeadorTransformacao.get(e);
             sprite = mapeadorSprite.get(e);
 
-            TextureRegion tr = sprite.regioes[sprite.regiaoAtual];
+            TextureRegion tr = recursos.obterTextureRegionAr(sprite)[sprite.regiaoAtual];
 
             float largura = tr.getRegionWidth();
             float altura = tr.getRegionHeight();
@@ -73,23 +76,23 @@ public class SistemaDesenho extends EntitySystem {
             float escalaX = transformacao.escala.x;
             float escalaY = transformacao.escala.y;
 
-            float x = transformacao.posicao.x;
-            float y = transformacao.posicao.y;
+            float posicaoX = transformacao.posicao.x;
+            float posicaoY = transformacao.posicao.y;
 
-            float origemX = largura / 2;
-            float origemY = 0;
+            float origemX = sprite.origemX;
+            float origemY = sprite.origemY;
 
             float rotacao = transformacao.rotacao;
 
             if (sprite.espelharX == true) {
-                x += largura * escalaX;
+                posicaoX += largura * escalaX;
                 largura *= -1;
             }
 
             batch.draw(
                     tr,
-                    x,
-                    y,
+                    posicaoX,
+                    posicaoY,
                     origemX,
                     origemY,
                     largura,

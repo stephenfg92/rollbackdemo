@@ -1,12 +1,10 @@
 package com.stephenfg.sre;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -31,25 +29,28 @@ import com.stephenfg.sre.sistemas.SistemaEstadoDePersonagem;
 import com.stephenfg.sre.sistemas.SistemaComando;
 import com.stephenfg.sre.sistemas.SistemaMovimento;
 import com.stephenfg.sre.sistemas.SistemaDesenho;
-import com.stephenfg.sre.utilidades.CriarArrayTextureRegion;
-import com.stephenfg.sre.utilidades.DespachanteDeTexturas;
+import com.stephenfg.sre.utilidades.GerenciadorDeRecursos;
 
 public class SREGame extends ApplicationAdapter {
 	PooledEngine engine;
-	DespachanteDeTexturas despachanteTexturas;
+	GerenciadorDeRecursos recursos = new GerenciadorDeRecursos();
 
 	@Override
 	public void create () {
 		OrthographicCamera camera = new OrthographicCamera();
 		camera.setToOrtho(false, 640, 480);
 		BitmapFont font = new BitmapFont();
-		despachanteTexturas = new DespachanteDeTexturas();
 		BarramentoDeEventos barramentoDeEventos = new BarramentoDeEventos();
 
+		carregarRecursos();
 		engine = inicializarEngine(barramentoDeEventos, camera, font);
-
 		inicializarEntidades();
 
+	}
+
+	private void carregarRecursos() {
+		recursos.adicionarTextura(HeroData.id, HeroData.caminhoSprite);
+		recursos.adicionarTextura("tree", "tree/tree.png");
 	}
 
 	public PooledEngine inicializarEngine(BarramentoDeEventos barramento, OrthographicCamera camera, BitmapFont font) {
@@ -59,8 +60,8 @@ public class SREGame extends ApplicationAdapter {
 		engine.addSystem(new SistemaMovimento());
 		engine.addSystem((EntitySystem) new SistemaDeAnimacao(barramento).assinarEvento(EventoMudancaDeEstado.class));
 		engine.addSystem(new SistemaDeOrientacao());
-		engine.addSystem(new SistemaDesenho(camera, font));
 		engine.addSystem(new SistemaDesenhoDebug(camera, font));
+		engine.addSystem(new SistemaDesenho(camera, font, recursos));
 
 		return engine;
 	}
@@ -72,15 +73,16 @@ public class SREGame extends ApplicationAdapter {
 		hero.add(new ComponenteOrientacao());
 		hero.add(new ComponenteTransformacao(new Vector2(50, 50), new Vector2(3, 3)));
 		hero.add(new ComponenteCorpoRigido());
-		hero.add(new ComponenteSpritesheet(CriarArrayTextureRegion.criar(despachanteTexturas, HeroData.caminhoSprite, HeroData.larguraQuadro, HeroData.alturaQuadro, HeroData.numeroLinhas, HeroData.numeroColunas)));
+		hero.add(new ComponenteSpritesheet(HeroData.id, HeroData.larguraQuadro, HeroData.alturaQuadro, HeroData.numeroLinhas, HeroData.numeroColunas));
 		hero.add(new ComponenteAnimacao(HeroData.quadrosPorSegundo));
 		hero.add(new ComponenteDebug());
 		engine.addEntity(hero);
 
 		Entity arve =  engine.createEntity();
 		arve.add(new ComponenteTransformacao(new Vector2(200,50), new Vector2(3, 3)));
-		arve.add(new ComponenteSpritesheet(CriarArrayTextureRegion.criar(despachanteTexturas, "tree/tree.png", 16, 32)));
+		arve.add(new ComponenteSpritesheet("tree",16, 32));
 		arve.add(new ComponenteColisorCaixa(16,32));
+		arve.add(new ComponenteDebug());
 		engine.addEntity(arve);
 	}
 
@@ -94,7 +96,6 @@ public class SREGame extends ApplicationAdapter {
 	
 	@Override
 	public void dispose () {
-		despachanteTexturas.despacharTexturas();
-		//this.dispose();
+		recursos.dispose();
 	}
 }
