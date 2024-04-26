@@ -23,7 +23,7 @@ public class ComponenteSpritesheet implements Component {
         this.id = id;
         this.largura = larguraQuadro;
         this.altura = alturaQuadro;
-        this.origemX = largura / 2;
+        this.origemX = 0;
         this.origemY = 0;
         this.numeroLinhas = numeroLinhas;
         this.numeroColunas = numeroColunas;
@@ -33,7 +33,7 @@ public class ComponenteSpritesheet implements Component {
         this.id = id;
         this.largura = larguraQuadro;
         this.altura = alturaQuadro;
-        this.origemX = largura / 2;
+        this.origemX = 0;
         this.origemY = 0;
     }
 }

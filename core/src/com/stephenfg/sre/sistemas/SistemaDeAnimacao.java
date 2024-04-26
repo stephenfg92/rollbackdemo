@@ -75,7 +75,7 @@ public class SistemaDeAnimacao extends EntitySystem implements Assinante {
     public void aoMudarEstado(EventoMudancaDeEstado evt) {
         ComponenteAnimacao animacao = mapeadorAnimacao.get(evt.destinatario);
         ComponenteSpritesheet sprite = mapeadorSprites.get(evt.destinatario);
-        Intervalo intervalo = HeroData.heroAnims.get(evt.novoEstado);
+        Intervalo intervalo = animacao.animacoes.get(evt.novoEstado);
 
         animacao.qtdQuadros = intervalo.tamanho;
         animacao.regiaoInicial = intervalo.inicio;

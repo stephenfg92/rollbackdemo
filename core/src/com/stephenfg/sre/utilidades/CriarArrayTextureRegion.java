@@ -1,5 +1,6 @@
 package com.stephenfg.sre.utilidades;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.stephenfg.sre.componentes.ComponenteSpritesheet;
@@ -10,10 +11,7 @@ public class CriarArrayTextureRegion {
         TextureRegion[] regions = new TextureRegion[numeroColunas * numeroLinhas];
         for (int i = 0, currentRow = 0; currentRow < numeroLinhas; ++currentRow) {
             for (int currentCol = 0; currentCol < numeroColunas; ++currentCol, ++i){
-                TextureRegion tr = new TextureRegion(t, alturaQuadro * currentCol, larguraQuadro * currentRow, alturaQuadro, larguraQuadro);
-                // TODO: Adicionar texture somente se ela não for inteiramente branca!
-                // Para otimizar, olhe só a diagonal.
-                // Use a classe PixMap
+                TextureRegion tr = new TextureRegion(t, larguraQuadro * currentCol, alturaQuadro * currentRow, larguraQuadro, alturaQuadro);
                 regions[i] = tr;
             }
         }

@@ -59,7 +59,7 @@ public class SistemaDesenhoDebug extends EntitySystem {
         ComponenteSpritesheet sprite;
         ComponenteEstado estado;
         ComponenteCorpoRigido corpoRigido;
-        ComponenteColisorCaixa colisorCaixa;
+        ComponenteColisorCaixa colisor;
 
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
@@ -74,7 +74,7 @@ public class SistemaDesenhoDebug extends EntitySystem {
             estado = mapeadorEstado.get(e);
             corpoRigido = mapeadorCorpoRigido.get(e);
 
-            colisorCaixa = mapeadorColisorCaixa.get(e);
+            colisor = mapeadorColisorCaixa.get(e);
 
             //DBG
             if (estado != null) {
@@ -84,14 +84,15 @@ public class SistemaDesenhoDebug extends EntitySystem {
                 font.draw(batch, "ORIENTAÇÃO = " + sprite.espelharX, 0, 420);
             }
 
-            if (colisorCaixa != null && transformacao != null) {
+            if (colisor != null && transformacao != null) {
                 shape.begin(ShapeRenderer.ShapeType.Line);
-                shape.setColor(Color.RED);
+                shape.setColor(colisor.colidindo ? Color.RED : Color.BLUE);
+
                 shape.rect(
-                        transformacao.posicao.x,
-                        transformacao.posicao.y,
-                        colisorCaixa.largura * transformacao.escala.x,
-                        colisorCaixa.altura * transformacao.escala.y
+                        transformacao.posicao.x + colisor.deslocamento.x * transformacao.escala.x,
+                        transformacao.posicao.y + colisor.deslocamento.y * transformacao.escala.y,
+                        colisor.dimensoes.x * transformacao.escala.x,
+                        colisor.dimensoes.y * transformacao.escala.y
                 );
                 shape.end();
             }

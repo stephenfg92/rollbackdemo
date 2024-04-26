@@ -19,11 +19,16 @@ import com.stephenfg.sre.componentes.ComponenteCorpoRigido;
 import com.stephenfg.sre.componentes.ComponenteSpritesheet;
 import com.stephenfg.sre.componentes.ComponenteTransformacao;
 import com.stephenfg.sre.data.EstadoDoPersonagem;
+import com.stephenfg.sre.data.Marcador;
+import com.stephenfg.sre.data.hero.AdventurerData;
 import com.stephenfg.sre.data.hero.HeroData;
 import com.stephenfg.sre.eventos.BarramentoDeEventos;
+import com.stephenfg.sre.eventos.EventoColisao;
 import com.stephenfg.sre.eventos.EventoMudancaDeEstado;
 import com.stephenfg.sre.sistemas.SistemaDeAnimacao;
+import com.stephenfg.sre.sistemas.SistemaDeColisao;
 import com.stephenfg.sre.sistemas.SistemaDeOrientacao;
+import com.stephenfg.sre.sistemas.SistemaDeResolucaoDeColisoes;
 import com.stephenfg.sre.sistemas.SistemaDesenhoDebug;
 import com.stephenfg.sre.sistemas.SistemaEstadoDePersonagem;
 import com.stephenfg.sre.sistemas.SistemaComando;
@@ -31,9 +36,13 @@ import com.stephenfg.sre.sistemas.SistemaMovimento;
 import com.stephenfg.sre.sistemas.SistemaDesenho;
 import com.stephenfg.sre.utilidades.GerenciadorDeRecursos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SREGame extends ApplicationAdapter {
 	PooledEngine engine;
 	GerenciadorDeRecursos recursos = new GerenciadorDeRecursos();
+	List<EventoColisao> listaColisoes = new ArrayList<>();
 
 	@Override
 	public void create () {
@@ -49,7 +58,8 @@ public class SREGame extends ApplicationAdapter {
 	}
 
 	private void carregarRecursos() {
-		recursos.adicionarTextura(HeroData.id, HeroData.caminhoSprite);
+		//recursos.adicionarTextura(HeroData.id, HeroData.caminhoSprite);
+		recursos.adicionarTextura(AdventurerData.id, AdventurerData.caminhoSprite);
 		recursos.adicionarTextura("tree", "tree/tree.png");
 	}
 
@@ -58,6 +68,8 @@ public class SREGame extends ApplicationAdapter {
 		engine.addSystem(new SistemaComando(0));
 		engine.addSystem(new SistemaEstadoDePersonagem(barramento));
 		engine.addSystem(new SistemaMovimento());
+		engine.addSystem(new SistemaDeColisao(1, barramento));
+		engine.addSystem((EntitySystem) new SistemaDeResolucaoDeColisoes(2, barramento).assinarEvento(EventoColisao.class));
 		engine.addSystem((EntitySystem) new SistemaDeAnimacao(barramento).assinarEvento(EventoMudancaDeEstado.class));
 		engine.addSystem(new SistemaDeOrientacao());
 		engine.addSystem(new SistemaDesenhoDebug(camera, font));
@@ -73,9 +85,13 @@ public class SREGame extends ApplicationAdapter {
 		hero.add(new ComponenteOrientacao());
 		hero.add(new ComponenteTransformacao(new Vector2(50, 50), new Vector2(3, 3)));
 		hero.add(new ComponenteCorpoRigido());
-		hero.add(new ComponenteSpritesheet(HeroData.id, HeroData.larguraQuadro, HeroData.alturaQuadro, HeroData.numeroLinhas, HeroData.numeroColunas));
-		hero.add(new ComponenteAnimacao(HeroData.quadrosPorSegundo));
+		//hero.add(new ComponenteSpritesheet(HeroData.id, HeroData.larguraQuadro, HeroData.alturaQuadro, HeroData.numeroLinhas, HeroData.numeroColunas));
+		//hero.add(new ComponenteAnimacao(HeroData.quadrosPorSegundo));
+		hero.add(new ComponenteSpritesheet(AdventurerData.id, AdventurerData.larguraQuadro, AdventurerData.alturaQuadro, AdventurerData.numeroLinhas, AdventurerData.numeroColunas));
+		hero.add(new ComponenteAnimacao(AdventurerData.adventurerAnims, AdventurerData.quadrosPorSegundo));
+		hero.add(new ComponenteColisorCaixa(8, 29, new Vector2(21, 1)));
 		hero.add(new ComponenteDebug());
+		hero.flags = Marcador.criarMascara(Marcador.JOGADOR);
 		engine.addEntity(hero);
 
 		Entity arve =  engine.createEntity();
@@ -83,6 +99,7 @@ public class SREGame extends ApplicationAdapter {
 		arve.add(new ComponenteSpritesheet("tree",16, 32));
 		arve.add(new ComponenteColisorCaixa(16,32));
 		arve.add(new ComponenteDebug());
+		arve.flags = Marcador.criarMascara(Marcador.CENARIO);
 		engine.addEntity(arve);
 	}
 

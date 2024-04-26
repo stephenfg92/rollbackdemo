@@ -6,6 +6,7 @@ import java.util.Map;
 public class NomeDeRetorno {
     private static Map<Class<? extends Evento>, String> nome = new HashMap<Class<? extends Evento>, String>() {{
         put(EventoMudancaDeEstado.class, "aoMudarEstado");
+        put(EventoColisao.class, "aoHaverColisao");
     }};
 
     public static String obterNome(Class<? extends Evento> eventType){
