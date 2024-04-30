@@ -6,15 +6,10 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.stephenfg.sre.componentes.ComponenteAnimacao;
-import com.stephenfg.sre.componentes.ComponenteEstado;
-import com.stephenfg.sre.componentes.ComponenteOrientacao;
-import com.stephenfg.sre.componentes.ComponenteCorpoRigido;
 import com.stephenfg.sre.componentes.ComponenteSpritesheet;
 import com.stephenfg.sre.componentes.ComponenteTransformacao;
 import com.stephenfg.sre.utilidades.GerenciadorDeRecursos;
@@ -30,10 +25,6 @@ public class SistemaDesenho extends EntitySystem {
 
     private ComponentMapper<ComponenteTransformacao> mapeadorTransformacao = ComponentMapper.getFor(ComponenteTransformacao.class);
     private ComponentMapper<ComponenteSpritesheet> mapeadorSprite = ComponentMapper.getFor(ComponenteSpritesheet.class);
-
-    //DBG
-    private ComponentMapper<ComponenteEstado> mapeadorEstado = ComponentMapper.getFor(ComponenteEstado.class);
-    private ComponentMapper<ComponenteCorpoRigido> mapeadorCorpoRigido = ComponentMapper.getFor(ComponenteCorpoRigido.class);
 
     public SistemaDesenho(OrthographicCamera camera, BitmapFont font, GerenciadorDeRecursos recursos){
         batch = new SpriteBatch();
@@ -70,22 +61,20 @@ public class SistemaDesenho extends EntitySystem {
 
             TextureRegion tr = recursos.obterTextureRegionAr(sprite)[sprite.regiaoAtual];
 
-            float largura = tr.getRegionWidth();
-            float altura = tr.getRegionHeight();
+            float largura = tr.getRegionWidth() * transformacao.escala.x;
+            float altura = tr.getRegionHeight() * transformacao.escala.y;
 
-            float escalaX = transformacao.escala.x;
-            float escalaY = transformacao.escala.y;
-
-            float posicaoX = transformacao.posicao.x;
-            float posicaoY = transformacao.posicao.y;
+            float posicaoX = transformacao.centro.x - (largura / 2);
+            float posicaoY = transformacao.centro.y - (altura / 2);
 
             float origemX = sprite.origemX;
             float origemY = sprite.origemY;
 
             float rotacao = transformacao.rotacao;
 
-            if (sprite.espelharX == true) {
-                posicaoX += largura * escalaX;
+            if (sprite.espelharX) {
+                origemX = largura - origemX;  // Ajusta a origem X quando a sprite é espelhada
+                posicaoX += largura;  // Ajusta a posição X devido à inversão do espelhamento
                 largura *= -1;
             }
 
@@ -95,10 +84,10 @@ public class SistemaDesenho extends EntitySystem {
                     posicaoY,
                     origemX,
                     origemY,
-                    largura,
+                    largura,  // Usa o valor absoluto para evitar distorções no tamanho
                     altura,
-                    escalaX,
-                    escalaY,
+                    1,  // A escala já foi aplicada ao calcular largura e altura
+                    1,  // A escala já foi aplicada ao calcular largura e altura
                     rotacao
             );
 

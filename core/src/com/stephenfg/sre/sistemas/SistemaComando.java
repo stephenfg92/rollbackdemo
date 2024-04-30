@@ -41,7 +41,7 @@ public class SistemaComando extends EntitySystem {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
             b |= (1 << AcoesDeEntrada.DIREITA);
 
-        //b |= (1 << InputActions.RIGHT);
+        //b |= (1 << AcoesDeEntrada.DIREITA);
 
         return b;
     }

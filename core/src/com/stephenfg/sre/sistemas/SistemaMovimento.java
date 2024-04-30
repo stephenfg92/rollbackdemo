@@ -51,12 +51,14 @@ public class SistemaMovimento extends EntitySystem {
         return velocidade;
     }
 
-    private strictfp Vector2 obterQuantidadeDeMovimento(Vector2 velocidade, Float deltaTempo){
+    private strictfp Vector2 calcularDeltaMovimento(Vector2 velocidade, Float deltaTempo){
         return new Vector2(velocidade.x * deltaTempo, velocidade.y * deltaTempo);
     }
 
     @Override
     public void update(float deltaTime){
+        if (deltaTime > 0.016f)
+            deltaTime = 0.016f;
         ComponenteComando entrada;
         ComponenteCorpoRigido corpoRigido;
         ComponenteTransformacao transformacao;
@@ -71,11 +73,12 @@ public class SistemaMovimento extends EntitySystem {
             corpoRigido.velocidadeAnterior = corpoRigido.velocidade;
 
             Vector2 novaVelocidade = obterVelocidade(entrada.bits);
-            Vector2 quantidadeMovimento = obterQuantidadeDeMovimento(novaVelocidade, deltaTime);
-            Vector2 novaPosicao = new Vector2(transformacao.posicao.x + quantidadeMovimento.x, transformacao.posicao.y + quantidadeMovimento.y);
+            Vector2 deltaMovimento = calcularDeltaMovimento(novaVelocidade, deltaTime);
+            Vector2 novaPosicao = new Vector2(transformacao.centro.x + deltaMovimento.x, transformacao.centro.y + deltaMovimento.y);
 
             corpoRigido.velocidade = novaVelocidade;
-            transformacao.posicao = novaPosicao;
+            corpoRigido.deltaMovimento = deltaMovimento;
+            transformacao.centro = novaPosicao;
         }
     }
 

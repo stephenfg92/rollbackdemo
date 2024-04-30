@@ -58,8 +58,9 @@ public class SistemaDeResolucaoDeColisoes extends EntitySystem implements Assina
         // Redefinindo a velocidade baseada na normal da colisão
         if (c.normalColisao.x != 0) {
             cRigido.velocidade.x = 0;
-            float correcaoX = c.normalColisao.x > 0 ? -c.penetracao.x : c.penetracao.x;
-            transformacao.posicao.x += correcaoX;
+            float margemX = 3f;
+            float correcaoX = c.normalColisao.x > 0 ? (c.penetracao.x + margemX) : -(c.penetracao.x + margemX);
+            transformacao.centro.x += correcaoX;
         }
 
         /*if (c.normalColisao.y != 0) {
@@ -70,7 +71,7 @@ public class SistemaDeResolucaoDeColisoes extends EntitySystem implements Assina
     }
 
     private boolean eJogador(Entity e){
-        return Marcador.possuiMarcador(e.flags, Marcador.JOGADOR);
+        return Marcador.possuiMarcador(e.flags, Marcador.DINAMICO);
     }
 
     @Override

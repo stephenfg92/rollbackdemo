@@ -1,8 +1,8 @@
 package com.stephenfg.sre.data;
 
 public enum Marcador {
-    JOGADOR(1),
-    CENARIO(2);
+    DINAMICO(1),
+    ESTATICO(2);
 
     private final int mascara;
 
