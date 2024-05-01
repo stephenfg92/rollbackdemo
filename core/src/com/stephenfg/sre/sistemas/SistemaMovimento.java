@@ -15,7 +15,6 @@ import com.stephenfg.sre.componentes.ComponenteAABB;
 import com.stephenfg.sre.componentes.ComponenteComando;
 import com.stephenfg.sre.componentes.ComponenteCorpoRigido;
 import com.stephenfg.sre.componentes.ComponenteTransformacao;
-import com.stephenfg.sre.data.Marcador;
 import com.stephenfg.sre.data.hero.HeroData;
 import com.stephenfg.sre.data.AcoesDeEntrada;
 
@@ -83,10 +82,10 @@ public class SistemaMovimento extends EntitySystem {
             Vector2 deltaMovimento = calcularDeltaMovimento(novaVelocidade, deltaTime);
             Vector2 novaPosicao = new Vector2(transformacao.centro.x + deltaMovimento.x, transformacao.centro.y + deltaMovimento.y);
 
-            boolean ok = procurarColisoes(transformacao, colisor, deltaMovimento);
-            colisor.colidindo = !ok;
+            Varredura varredura = procurarColisoes(e, transformacao, colisor, deltaMovimento);
+            colisor.colidindo = varredura.colisao != null;
 
-            if (ok) {
+            if (!colisor.colidindo) {
                 corpoRigido.velocidade = novaVelocidade;
                 corpoRigido.deltaMovimento = deltaMovimento;
                 transformacao.centro = novaPosicao;
@@ -94,10 +93,18 @@ public class SistemaMovimento extends EntitySystem {
         }
     }
 
-    private boolean procurarColisoes(ComponenteTransformacao tDinamica, ComponenteAABB cDinamico, Vector2 deltaMovimento) {
+    private Varredura procurarColisoes(Entity eDinamica, ComponenteTransformacao tDinamica, ComponenteAABB cDinamico, Vector2 deltaMovimento) {
+        Varredura maisProximo = new Varredura();
+        maisProximo.tempo = 1;
+        maisProximo.pontoMaximo = new Vector2(
+                tDinamica.centro.x + deltaMovimento.x,
+                tDinamica.centro.y + deltaMovimento.y
+        );
+
         for (int i = 0; i < entidadesComColisor.size(); i++){
             Entity e = entidadesComColisor.get(i);
-            if (Marcador.possuiMarcador(e.flags, Marcador.DINAMICO))
+
+            if (e == eDinamica)
                 continue;
 
             ComponenteTransformacao tEstatica = mapeadorTransformacao.get(e);
@@ -105,11 +112,11 @@ public class SistemaMovimento extends EntitySystem {
 
             Varredura varredura = varrerAABB(tDinamica, cDinamico, tEstatica, cEstatico, deltaMovimento);
 
-            if (varredura.colisao != null)
-                return false;
+            if (varredura.tempo < maisProximo.tempo)
+                maisProximo = varredura;
         }
 
-        return true;
+        return maisProximo;
     }
 
     private Colisao AABBvsAABB(ComponenteTransformacao transformacaoA, ComponenteAABB colisorA, ComponenteTransformacao transformacaoB, ComponenteAABB colisorB) {

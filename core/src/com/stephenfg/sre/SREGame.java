@@ -77,7 +77,7 @@ public class SREGame extends ApplicationAdapter {
 		hero.add(new ComponenteComando());
 		hero.add(new ComponenteEstado(EstadoDoPersonagem.NENHUM));
 		hero.add(new ComponenteOrientacao());
-		hero.add(new ComponenteTransformacao(new Vector2(100, 100), new Vector2(2, 2)));
+		hero.add(new ComponenteTransformacao(new Vector2(200, 100), new Vector2(2, 2)));
 		hero.add(new ComponenteCorpoRigido());
 		hero.add(new ComponenteSpritesheet(AdventurerData.id, AdventurerData.larguraQuadro, AdventurerData.alturaQuadro, AdventurerData.numeroLinhas, AdventurerData.numeroColunas));
 		hero.add(new ComponenteAnimacao(AdventurerData.adventurerAnims, AdventurerData.quadrosPorSegundo));
@@ -93,6 +93,14 @@ public class SREGame extends ApplicationAdapter {
 		arve.add(new ComponenteDebug());
 		arve.flags = Marcador.criarMascara(Marcador.ESTATICO);
 		engine.addEntity(arve);
+
+		Entity arve2 =  engine.createEntity();
+		arve2.add(new ComponenteTransformacao(new Vector2(100,100), new Vector2(2, 2)));
+		arve2.add(new ComponenteSpritesheet("tree",16, 32));
+		arve2.add(new ComponenteAABB(new Vector2(8, 16)));
+		arve2.add(new ComponenteDebug());
+		arve2.flags = Marcador.criarMascara(Marcador.ESTATICO);
+		engine.addEntity(arve2);
 	}
 
 	@Override
