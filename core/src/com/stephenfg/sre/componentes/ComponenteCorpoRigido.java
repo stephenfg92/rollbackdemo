@@ -19,4 +19,9 @@ public class ComponenteCorpoRigido implements Component {
         this.velocidadeAnterior = this.velocidade;
         this.deltaMovimento = new Vector2(0, 0);
     }
+    public ComponenteCorpoRigido(ComponenteCorpoRigido outro){
+        this.velocidade = new Vector2(outro.velocidade);
+        this.velocidadeAnterior = new Vector2(outro.velocidadeAnterior);
+        this.deltaMovimento = new Vector2(outro.deltaMovimento);
+    }
 }

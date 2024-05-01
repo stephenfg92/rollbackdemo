@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.stephenfg.sre.componentes.ComponenteAABB;
-import com.stephenfg.sre.componentes.ComponenteColisorCaixa;
 import com.stephenfg.sre.componentes.ComponenteCorpoRigido;
 import com.stephenfg.sre.componentes.ComponenteDebug;
 import com.stephenfg.sre.componentes.ComponenteEstado;
@@ -34,7 +33,6 @@ public class SistemaDesenhoDebug extends EntitySystem {
 
     private ComponentMapper<ComponenteEstado> mapeadorEstado = ComponentMapper.getFor(ComponenteEstado.class);
     private ComponentMapper<ComponenteCorpoRigido> mapeadorCorpoRigido = ComponentMapper.getFor(ComponenteCorpoRigido.class);
-    private ComponentMapper<ComponenteColisorCaixa> mapeadorColisorCaixa = ComponentMapper.getFor(ComponenteColisorCaixa.class);
     private ComponentMapper<ComponenteAABB> mapeadorAABB = ComponentMapper.getFor(ComponenteAABB.class);
     public SistemaDesenhoDebug(OrthographicCamera camera, BitmapFont font){
         batch = new SpriteBatch();
@@ -59,7 +57,6 @@ public class SistemaDesenhoDebug extends EntitySystem {
         ComponenteSpritesheet sprite;
         ComponenteEstado estado;
         ComponenteCorpoRigido corpoRigido;
-        ComponenteColisorCaixa colisor;
         ComponenteAABB aabb;
 
         batch.begin();
@@ -75,7 +72,6 @@ public class SistemaDesenhoDebug extends EntitySystem {
             estado = mapeadorEstado.get(e);
             corpoRigido = mapeadorCorpoRigido.get(e);
 
-            colisor = mapeadorColisorCaixa.get(e);
             aabb = mapeadorAABB.get(e);
 
             //DBG
@@ -86,37 +82,24 @@ public class SistemaDesenhoDebug extends EntitySystem {
                 font.draw(batch, "ORIENTAÇÃO = " + sprite.espelharX, 0, 420);
             }
 
-            if (colisor != null && transformacao != null) {
-                shape.begin(ShapeRenderer.ShapeType.Line);
-                shape.setColor(colisor.colidindo ? Color.RED : Color.BLUE);
-
-                shape.rect(
-                        transformacao.centro.x + colisor.deslocamento.x * transformacao.escala.x,
-                        transformacao.centro.y + colisor.deslocamento.y * transformacao.escala.y,
-                        colisor.dimensoes.x * transformacao.escala.x,
-                        colisor.dimensoes.y * transformacao.escala.y
-                );
-                shape.end();
-            }
-
             if (aabb != null && transformacao != null) {
                 shape.begin(ShapeRenderer.ShapeType.Line);
 
                 Color cor = aabb.colidindo ? Color.RED : Color.GREEN;
-                shape.setColor(cor);  // Cor da linha para a AABB
+                shape.setColor(cor);
 
                 // Calcula o canto inferior esquerdo da AABB
-                float larguraAABB = aabb.extensao.x * transformacao.escala.x;
-                float alturaAABB = aabb.extensao.y * transformacao.escala.y;
+                float extensaoAABBx = aabb.extensao.x * transformacao.escala.x;
+                float extensaoAABBy = aabb.extensao.y * transformacao.escala.y;
 
-                float cantoInferiorEsquerdoX = transformacao.centro.x - (larguraAABB / 2);
-                float cantoInferiorEsquerdoY = transformacao.centro.y - (alturaAABB / 2);
+                float cantoInferiorEsquerdoX = transformacao.centro.x - extensaoAABBx;
+                float cantoInferiorEsquerdoY = transformacao.centro.y - extensaoAABBy;
 
                 shape.rect(
                         cantoInferiorEsquerdoX,
                         cantoInferiorEsquerdoY,
-                        larguraAABB,
-                        alturaAABB
+                        extensaoAABBx * 2,
+                        extensaoAABBy * 2
                 );
                 shape.end();
             }

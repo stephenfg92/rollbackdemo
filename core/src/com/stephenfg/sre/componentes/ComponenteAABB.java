@@ -12,4 +12,10 @@ public class ComponenteAABB implements Component {
         this.extensao = extensao;
         this.deslocamento = new Vector2(0, 0);
     }
+    public ComponenteAABB(ComponenteAABB outro) {
+        this.extensao = new Vector2(outro.extensao);
+        this.deslocamento = new Vector2(outro.deslocamento);
+        this.colidindo = outro.colidindo;
+    }
+
 }

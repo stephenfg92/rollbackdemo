@@ -17,4 +17,11 @@ public class ComponenteTransformacao implements Component {
         this.centro = centro;
         this.escala = escala;
     }
+
+    public ComponenteTransformacao(ComponenteTransformacao outro) {
+        this.centro = new Vector2(outro.centro);
+        this.escala = new Vector2(outro.escala);
+        this.rotacao = outro.rotacao;
+    }
+
 }
