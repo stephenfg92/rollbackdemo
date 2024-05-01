@@ -115,14 +115,14 @@ public class SistemaMovimento extends EntitySystem {
     private Colisao AABBvsAABB(ComponenteTransformacao transformacaoA, ComponenteAABB colisorA, ComponenteTransformacao transformacaoB, ComponenteAABB colisorB) {
         // Cálculo da diferença de posição e a penetração em x
         float dx = transformacaoB.centro.x - transformacaoA.centro.x;
-        float px = (colisorB.extensao.x + colisorA.extensao.x) - Math.abs(dx);
+        float px = ((colisorB.extensao.x * transformacaoB.escala.x) + (colisorA.extensao.x * transformacaoA.escala.x)) - Math.abs(dx);
         if (px <= .0f) {
             return null; // Não há colisão se a penetração em x é zero ou negativa
         }
 
         // Cálculo da diferença de posição e a penetração em y
         float dy = transformacaoB.centro.y - transformacaoA.centro.y;
-        float py = (colisorB.extensao.y + colisorA.extensao.y) - Math.abs(dy);
+        float py = ((colisorB.extensao.y * transformacaoB.escala.y) + (colisorA.extensao.y * transformacaoB.escala.y)) - Math.abs(dy);
         if (py <= .0f) {
             return null; // Não há colisão se a penetração em y é zero ou negativa
         }
@@ -134,7 +134,7 @@ public class SistemaMovimento extends EntitySystem {
             colisao.penetracao = new Vector2(px * sx, 0);
             colisao.normalColisao = new Vector2(sx, 0);
             colisao.pontoDeContato = new Vector2(
-                    transformacaoA.centro.x + (colisorA.extensao.x * sx),
+                    transformacaoA.centro.x + ((colisorA.extensao.x * transformacaoA.escala.x) * sx),
                     transformacaoB.centro.y);
         } else {
             float sy = Math.signum(dy);
@@ -142,7 +142,7 @@ public class SistemaMovimento extends EntitySystem {
             colisao.normalColisao = new Vector2(0, sy);
             colisao.pontoDeContato = new Vector2(
                     transformacaoB.centro.x,
-                    transformacaoA.centro.y + colisorA.extensao.y * sy);
+                    transformacaoA.centro.y + (colisorA.extensao.y * transformacaoA.escala.y) * sy);
         }
 
         return colisao;
@@ -154,8 +154,8 @@ public class SistemaMovimento extends EntitySystem {
         int sinalY = (int) Math.signum(escalaY);
 
 
-        float extensaoX = colisor.extensao.x;
-        float extensaoY = colisor.extensao.y;
+        float extensaoX = colisor.extensao.x * transformacao.escala.x;
+        float extensaoY = colisor.extensao.y * transformacao.escala.y;
 
         if (modificadorExtensaoAABB != null){
             extensaoX += modificadorExtensaoAABB.x;
@@ -213,7 +213,12 @@ public class SistemaMovimento extends EntitySystem {
         retaMovimento.origem = new Vector2(transformacaoDinamica.centro.x, transformacaoDinamica.centro.y);
         retaMovimento.delta = new Vector2(deltaMovimento.x, deltaMovimento.y);
 
-        varredura.colisao = AABBvsSegmentoDeReta(transformacaoEstatica, colisorEstatico, retaMovimento, colisorDinamico.extensao);
+        Vector2 modificadorColisorEstatico = new Vector2(
+                colisorDinamico.extensao.x * transformacaoDinamica.escala.x,
+                colisorDinamico.extensao.y * transformacaoDinamica.escala.y
+        );
+
+        varredura.colisao = AABBvsSegmentoDeReta(transformacaoEstatica, colisorEstatico, retaMovimento, modificadorColisorEstatico);
         if (varredura.colisao != null) {
             float epsilon = 0.00000001f; // Para evitar divisões por zero.
             varredura.tempo = Math.max(varredura.colisao.tempo - epsilon, 0);

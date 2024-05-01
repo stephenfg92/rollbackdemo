@@ -77,19 +77,19 @@ public class SREGame extends ApplicationAdapter {
 		hero.add(new ComponenteComando());
 		hero.add(new ComponenteEstado(EstadoDoPersonagem.NENHUM));
 		hero.add(new ComponenteOrientacao());
-		hero.add(new ComponenteTransformacao(new Vector2(100, 100), new Vector2(1, 1)));
+		hero.add(new ComponenteTransformacao(new Vector2(100, 100), new Vector2(2, 2)));
 		hero.add(new ComponenteCorpoRigido());
 		hero.add(new ComponenteSpritesheet(AdventurerData.id, AdventurerData.larguraQuadro, AdventurerData.alturaQuadro, AdventurerData.numeroLinhas, AdventurerData.numeroColunas));
 		hero.add(new ComponenteAnimacao(AdventurerData.adventurerAnims, AdventurerData.quadrosPorSegundo));
-		hero.add(new ComponenteAABB(new Vector2(10, 20)));
+		hero.add(new ComponenteAABB(new Vector2(5, 10)));
 		hero.add(new ComponenteDebug());
 		hero.flags = Marcador.criarMascara(Marcador.DINAMICO);
 		engine.addEntity(hero);
 
 		Entity arve =  engine.createEntity();
-		arve.add(new ComponenteTransformacao(new Vector2(200,100), new Vector2(1, 1)));
+		arve.add(new ComponenteTransformacao(new Vector2(300,100), new Vector2(2, 2)));
 		arve.add(new ComponenteSpritesheet("tree",16, 32));
-		arve.add(new ComponenteAABB(new Vector2(16, 32)));
+		arve.add(new ComponenteAABB(new Vector2(8, 16)));
 		arve.add(new ComponenteDebug());
 		arve.flags = Marcador.criarMascara(Marcador.ESTATICO);
 		engine.addEntity(arve);
