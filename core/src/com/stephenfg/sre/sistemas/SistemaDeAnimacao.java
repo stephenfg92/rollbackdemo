@@ -12,11 +12,12 @@ import com.stephenfg.sre.componentes.ComponenteEstado;
 import com.stephenfg.sre.componentes.ComponenteSpritesheet;
 import com.stephenfg.sre.eventos.Evento;
 import com.stephenfg.sre.eventos.NomeDeRetorno;
-import com.stephenfg.sre.data.hero.HeroData;
 import com.stephenfg.sre.eventos.Retorno;
 import com.stephenfg.sre.eventos.BarramentoDeEventos;
 import com.stephenfg.sre.eventos.EventoMudancaDeEstado;
 import com.stephenfg.sre.eventos.Assinante;
+import com.stephenfg.sre.recursos.GerenciadorDeRecursos;
+import com.stephenfg.sre.recursos.Textura;
 import com.stephenfg.sre.utilidades.Intervalo;
 import com.stephenfg.sre.utilidades.StrictfpMath;
 
@@ -27,9 +28,11 @@ public class SistemaDeAnimacao extends EntitySystem implements Assinante {
     private ComponentMapper<ComponenteAnimacao> mapeadorAnimacao = ComponentMapper.getFor(ComponenteAnimacao.class);
     private float tempoAcumulado = 0.0f;
     private BarramentoDeEventos barramento;
+    private GerenciadorDeRecursos recursos;
 
-    public SistemaDeAnimacao(BarramentoDeEventos barramento){
+    public SistemaDeAnimacao(BarramentoDeEventos barramento, GerenciadorDeRecursos recursos){
         this.barramento = barramento;
+        this.recursos = recursos;
     }
 
     @Override
@@ -75,9 +78,11 @@ public class SistemaDeAnimacao extends EntitySystem implements Assinante {
     public void aoMudarEstado(EventoMudancaDeEstado evt) {
         ComponenteAnimacao animacao = mapeadorAnimacao.get(evt.destinatario);
         ComponenteSpritesheet sprite = mapeadorSprites.get(evt.destinatario);
-        Intervalo intervalo = animacao.animacoes.get(evt.novoEstado);
+        Textura textura = recursos.obterTextura(animacao.id);
+        Intervalo intervalo = textura.animacoes.get(evt.novoEstado);
 
         animacao.qtdQuadros = intervalo.tamanho;
+        animacao.taxaDeQuadros = textura.taxaDeQuadros;
         animacao.regiaoInicial = intervalo.inicio;
         animacao.regiaoFinal = intervalo.fim;
         animacao.quadroAtual = animacao.regiaoInicial;

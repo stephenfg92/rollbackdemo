@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.stephenfg.sre.componentes.ComponenteSpritesheet;
 import com.stephenfg.sre.componentes.ComponenteTransformacao;
-import com.stephenfg.sre.utilidades.GerenciadorDeRecursos;
+import com.stephenfg.sre.recursos.GerenciadorDeRecursos;
 
 //Ref https://github.com/libgdx/ashley/blob/caac1ff50cb30d67be8469a7fae7579fd549fd07/tests/src/com/badlogic/ashley/tests/systems/RenderSystem.java#L30
 public class SistemaDesenho extends EntitySystem {
@@ -59,7 +59,7 @@ public class SistemaDesenho extends EntitySystem {
             transformacao = mapeadorTransformacao.get(e);
             sprite = mapeadorSprite.get(e);
 
-            TextureRegion tr = recursos.obterTextureRegionAr(sprite)[sprite.regiaoAtual];
+            TextureRegion tr = recursos.obterTextura(sprite.id).regioes[sprite.regiaoAtual];
 
             float largura = tr.getRegionWidth() * transformacao.escala.x;
             float altura = tr.getRegionHeight() * transformacao.escala.y;

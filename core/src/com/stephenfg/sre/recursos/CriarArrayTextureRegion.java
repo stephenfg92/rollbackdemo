@@ -1,4 +1,4 @@
-package com.stephenfg.sre.utilidades;
+package com.stephenfg.sre.recursos;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,12 +24,5 @@ public class CriarArrayTextureRegion {
         regions[0] = new TextureRegion(t, larguraQuadro, alturaQuadro);
 
         return regions;
-    }
-
-    public static TextureRegion[] criar(Texture t, ComponenteSpritesheet sprite) {
-        if (sprite.numeroColunas != null && sprite.numeroLinhas != null)
-            return criar(t, sprite.largura, sprite.altura, sprite.numeroLinhas, sprite.numeroColunas);
-
-        return criar(t, sprite.largura, sprite.altura);
     }
 }

@@ -1,6 +1,6 @@
 package com.stephenfg.sre.data;
 
-public enum EstadoDoPersonagem {
+public enum Estado {
     NENHUM,
     PARADO,
     CORRENDO

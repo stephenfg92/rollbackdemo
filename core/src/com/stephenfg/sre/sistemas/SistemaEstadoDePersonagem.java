@@ -9,7 +9,7 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.stephenfg.sre.componentes.ComponenteEstado;
 import com.stephenfg.sre.componentes.ComponenteOrientacao;
 import com.stephenfg.sre.componentes.ComponenteCorpoRigido;
-import com.stephenfg.sre.data.EstadoDoPersonagem;
+import com.stephenfg.sre.data.Estado;
 import com.stephenfg.sre.estados.ArgumentosDeTratativa;
 import com.stephenfg.sre.estados.TratativaDeEstado;
 import com.stephenfg.sre.estados.TratativaEstadoCorrendo;
@@ -28,7 +28,7 @@ public class SistemaEstadoDePersonagem extends EntitySystem {
     private ComponentMapper<ComponenteCorpoRigido> mapeadorCorpoRigido = ComponentMapper.getFor(ComponenteCorpoRigido.class);
     private ComponentMapper<ComponenteOrientacao> mapeadorOrientacao = ComponentMapper.getFor(ComponenteOrientacao.class);
     private BarramentoDeEventos barramentoDeEventos;
-    private Map<EstadoDoPersonagem, TratativaDeEstado> tratativasDeEstado;
+    private Map<Estado, TratativaDeEstado> tratativasDeEstado;
     private ArgumentosDeTratativa argsTratativa;
 
     public SistemaEstadoDePersonagem(BarramentoDeEventos barramentoDeEventos) {
@@ -40,9 +40,9 @@ public class SistemaEstadoDePersonagem extends EntitySystem {
         argsTratativa.mapeadorOrientacao = this.mapeadorOrientacao;
 
         this.tratativasDeEstado = new HashMap<>();
-        this.tratativasDeEstado.put(EstadoDoPersonagem.NENHUM, new TratativaEstadoNenhum());
-        this.tratativasDeEstado.put(EstadoDoPersonagem.PARADO, new TratativaEstadoParado());
-        this.tratativasDeEstado.put(EstadoDoPersonagem.CORRENDO, new TratativaEstadoCorrendo());
+        this.tratativasDeEstado.put(Estado.NENHUM, new TratativaEstadoNenhum());
+        this.tratativasDeEstado.put(Estado.PARADO, new TratativaEstadoParado());
+        this.tratativasDeEstado.put(Estado.CORRENDO, new TratativaEstadoCorrendo());
     }
 
     @Override
@@ -89,29 +89,6 @@ public class SistemaEstadoDePersonagem extends EntitySystem {
                 }
             }
         }
-    }
-
-    private EventoMudancaDeEstado tratarEstadoCorrendo(Entity e, ComponenteEstado componenteEstado) {
-        ComponenteCorpoRigido corpoRigido = mapeadorCorpoRigido.get(e);
-        if (corpoRigido.velocidade.x == 0.0 && corpoRigido.velocidadeAnterior.x == 0.0){
-            componenteEstado.tipoEstado = EstadoDoPersonagem.PARADO;
-            return new EventoMudancaDeEstado(e, EstadoDoPersonagem.CORRENDO, EstadoDoPersonagem.PARADO);
-        }
-        return null;
-    }
-
-    private EventoMudancaDeEstado tratarEstadoParado(Entity e, ComponenteEstado componenteEstado) {
-        ComponenteCorpoRigido corpoRigido = mapeadorCorpoRigido.get(e);
-        if (corpoRigido.velocidadeAnterior.x == 0 && corpoRigido.velocidade.x != 0){
-            componenteEstado.tipoEstado = EstadoDoPersonagem.CORRENDO;
-            return new EventoMudancaDeEstado(e, EstadoDoPersonagem.PARADO, EstadoDoPersonagem.CORRENDO);
-        }
-        return null;
-    }
-
-    private EventoMudancaDeEstado nenhumEstado(Entity e, ComponenteEstado componenteEstado) {
-        componenteEstado.tipoEstado = EstadoDoPersonagem.PARADO;
-        return new EventoMudancaDeEstado(e, EstadoDoPersonagem.NENHUM, EstadoDoPersonagem.PARADO);
     }
     
     private void emitirEvento(EventoMudancaDeEstado event) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {

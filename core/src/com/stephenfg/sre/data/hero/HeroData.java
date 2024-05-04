@@ -1,6 +1,6 @@
 package com.stephenfg.sre.data.hero;
 
-import com.stephenfg.sre.data.EstadoDoPersonagem;
+import com.stephenfg.sre.data.Estado;
 import com.stephenfg.sre.utilidades.Intervalo;
 
 import java.util.HashMap;
@@ -14,9 +14,9 @@ public class HeroData {
     public static int larguraQuadro = 44;
     public static int numeroColunas = 6;
     public static int numeroLinhas = 17;
-    public static Map<EstadoDoPersonagem, Intervalo> heroAnims = new HashMap<EstadoDoPersonagem, Intervalo>(){{
-        put(EstadoDoPersonagem.PARADO, new Intervalo(0, 5));
-        put(EstadoDoPersonagem.CORRENDO, new Intervalo(6, 13));
+    public static Map<Estado, Intervalo> heroAnims = new HashMap<Estado, Intervalo>(){{
+        put(Estado.PARADO, new Intervalo(0, 5));
+        put(Estado.CORRENDO, new Intervalo(6, 13));
     }};
     public static int quadrosPorSegundo = 10;
 }
