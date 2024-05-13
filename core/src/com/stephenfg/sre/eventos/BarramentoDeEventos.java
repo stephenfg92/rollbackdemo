@@ -1,5 +1,7 @@
 package com.stephenfg.sre.eventos;
 
+import com.stephenfg.sre.utilidades.Par;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -8,23 +10,37 @@ import java.util.List;
 import java.util.Map;
 
 public class BarramentoDeEventos {
-    private Map<Class<? extends Evento>, List<Retorno>> eventoParaRetorno = new HashMap<>();
+    private Map<Class<? extends Evento>, List<Par<Object, Method>>> tratativas = new HashMap<>();
 
-    public BarramentoDeEventos(){
+    public void registrarAssinante(Object assinante) {
+        Method[] metodos = assinante.getClass().getDeclaredMethods();
+        for (Method m : metodos) {
+            if (m.isAnnotationPresent(TratativaDeEvento.class)) {
+                Class<? extends Evento> evento = m.getAnnotation(TratativaDeEvento.class).value();
+
+                List<Par<Object, Method>> listaMetodos = tratativas.get(evento);
+                if (listaMetodos == null) {
+                    listaMetodos = new ArrayList<>();
+                    tratativas.put(evento, listaMetodos);
+                }
+
+                listaMetodos.add(new Par<>(assinante, m));
+            }
+        }
     }
 
-    public void assinarEvento(Class<? extends Evento> evento, Retorno retorno){
-        if (!eventoParaRetorno.containsKey(evento))
-            eventoParaRetorno.put(evento, new ArrayList<Retorno>());
-        eventoParaRetorno.get(evento).add(retorno);
-    }
-
-    public void emitirEvento(Evento evento) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        List<Retorno> assinantes = eventoParaRetorno.get(evento.getClass());
-        for (Retorno r : assinantes){
-            Assinante donoDoRetorno = r.dono;
-            Method retorno = donoDoRetorno.getClass().getMethod(r.nomeDoMetodo, evento.getClass());
-            retorno.invoke(donoDoRetorno, evento);
+    public void emitirEvento(Evento evento) {
+        List<Par<Object, Method>> listaTratativas = tratativas.get(evento.getClass());
+        if (listaTratativas != null) {
+            for (Par<Object, Method> tratativa : listaTratativas) {
+                try {
+                    Method method = tratativa.getValor();
+                    method.setAccessible(true);
+                    method.invoke(tratativa.getChave(), evento);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

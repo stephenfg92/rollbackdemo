@@ -16,13 +16,14 @@ import com.stephenfg.sre.eventos.Retorno;
 import com.stephenfg.sre.eventos.BarramentoDeEventos;
 import com.stephenfg.sre.eventos.EventoMudancaDeEstado;
 import com.stephenfg.sre.eventos.Assinante;
+import com.stephenfg.sre.eventos.TratativaDeEvento;
 import com.stephenfg.sre.recursos.GerenciadorDeRecursos;
 import com.stephenfg.sre.recursos.Textura;
 import com.stephenfg.sre.utilidades.Intervalo;
 import com.stephenfg.sre.utilidades.StrictfpMath;
 
 
-public class SistemaDeAnimacao extends EntitySystem implements Assinante {
+public class SistemaDeAnimacao extends EntitySystem {
     private ImmutableArray<Entity> entidades;
     private ComponentMapper<ComponenteSpritesheet> mapeadorSprites = ComponentMapper.getFor(ComponenteSpritesheet.class);
     private ComponentMapper<ComponenteAnimacao> mapeadorAnimacao = ComponentMapper.getFor(ComponenteAnimacao.class);
@@ -75,6 +76,7 @@ public class SistemaDeAnimacao extends EntitySystem implements Assinante {
         sprite.regiaoAtual = animacao.quadroAtual;
     }
 
+    @TratativaDeEvento(EventoMudancaDeEstado.class)
     public void aoMudarEstado(EventoMudancaDeEstado evt) {
         ComponenteAnimacao animacao = mapeadorAnimacao.get(evt.destinatario);
         ComponenteSpritesheet sprite = mapeadorSprites.get(evt.destinatario);
@@ -89,10 +91,4 @@ public class SistemaDeAnimacao extends EntitySystem implements Assinante {
         sprite.regiaoAtual = animacao.regiaoInicial;
     }
 
-    @Override
-    public Assinante assinarEvento(Class<? extends Evento> event) {
-        String nomeRetorno = NomeDeRetorno.obterNome(event);
-        barramento.assinarEvento(event, new Retorno(this, nomeRetorno));
-        return this;
-    }
 }
