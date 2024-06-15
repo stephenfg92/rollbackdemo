@@ -69,7 +69,7 @@ public class SREGame extends ApplicationAdapter {
 		engine.addSystem(new SistemaEstadoDePersonagem(barramento));
 		engine.addSystem(new SistemaMovimento());
 
-		SistemaDeAnimacao animacao = new SistemaDeAnimacao(barramento, recursos);
+		SistemaDeAnimacao animacao = new SistemaDeAnimacao(recursos);
 		engine.addSystem(animacao);
 		barramento.registrarAssinante(animacao);
 

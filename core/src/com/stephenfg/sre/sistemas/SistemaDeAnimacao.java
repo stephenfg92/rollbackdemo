@@ -10,12 +10,8 @@ import com.badlogic.gdx.Gdx;
 import com.stephenfg.sre.componentes.ComponenteAnimacao;
 import com.stephenfg.sre.componentes.ComponenteEstado;
 import com.stephenfg.sre.componentes.ComponenteSpritesheet;
-import com.stephenfg.sre.eventos.Evento;
-import com.stephenfg.sre.eventos.NomeDeRetorno;
-import com.stephenfg.sre.eventos.Retorno;
 import com.stephenfg.sre.eventos.BarramentoDeEventos;
 import com.stephenfg.sre.eventos.EventoMudancaDeEstado;
-import com.stephenfg.sre.eventos.Assinante;
 import com.stephenfg.sre.eventos.TratativaDeEvento;
 import com.stephenfg.sre.recursos.GerenciadorDeRecursos;
 import com.stephenfg.sre.recursos.Textura;
@@ -28,11 +24,9 @@ public class SistemaDeAnimacao extends EntitySystem {
     private ComponentMapper<ComponenteSpritesheet> mapeadorSprites = ComponentMapper.getFor(ComponenteSpritesheet.class);
     private ComponentMapper<ComponenteAnimacao> mapeadorAnimacao = ComponentMapper.getFor(ComponenteAnimacao.class);
     private float tempoAcumulado = 0.0f;
-    private BarramentoDeEventos barramento;
     private GerenciadorDeRecursos recursos;
 
-    public SistemaDeAnimacao(BarramentoDeEventos barramento, GerenciadorDeRecursos recursos){
-        this.barramento = barramento;
+    public SistemaDeAnimacao(GerenciadorDeRecursos recursos){
         this.recursos = recursos;
     }
 
